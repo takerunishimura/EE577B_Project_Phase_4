@@ -1,0 +1,55 @@
+*.vcd
+*.fsdb
+*.log
+*.vpd
+simv
+simv.daidir/
+csrc/
+DVEfiles/
+*.key
+*.shm/
+*.trn
+*.dsn
+*/work/*
+!*/work/.gitkeep
+*/reports/*
+!*/reports/.gitkeep
+gen_imem2.py
+gen_imem3.py
+processor/netlist/*.sdf
+processor/netlist/*.v
+
+# Simulation artifacts
+*ana~
+*elab~
+*.err
+ncsim*
+
+# NIC synthesis artifacts
+nic/*.mr
+nic/*.pvl
+nic/*.syn
+nic/cksum_dir/
+nic/default.svf
+nic/netlist/*.sdf
+nic/netlist/*.v
+nic/netlist/*.sdc
+
+# Report dumps
+cmp/report/*.dump
+cmp/report/coverage_report.txt
+
+# Cadence/DC artifacts in cmp/
+*.mr
+*.pvl
+*.syn
+cds.lib
+hdl.var
+cksum_dir/
+default.svf
+setup_ee577b_v26.csh
+
+# CMP netlist
+cmp/netlist/*.sdf
+cmp/netlist/*.v
+cmp/netlist/*.sdc
