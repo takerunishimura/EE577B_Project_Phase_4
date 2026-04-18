@@ -47,7 +47,7 @@ cds.lib
 hdl.var
 cksum_dir/
 default.svf
-setup_ee577b_v26.csh
+
 
 # CMP netlist
 cmp/netlist/*.sdf
