@@ -2,6 +2,7 @@
 
 ## Setup
 ```bash
+tcsh
 source setup_ee577b_v26.csh
 ```
 
