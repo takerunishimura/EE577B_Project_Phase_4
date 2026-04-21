@@ -18,6 +18,7 @@ set link_library [list * gscl45nm.db /tools/synopsys/syn/Y-2026.03/libraries/syn
 
 # Reading source verilog file.
 # in this version, you don't need to copy the verilog file into ./src/ before synthesis.
+# Note: imem and dmem are excluded since they are now external to the CMP (Phase 4 spec)
 set rtl_dir ./design
 set rtl_files [glob -nocomplain $rtl_dir/*.v]
 if {[llength $rtl_files] == 0} {
@@ -27,14 +28,9 @@ if {[llength $rtl_files] == 0} {
 puts "Info: Found [llength $rtl_files] RTL files"
 
 analyze -format verilog $rtl_files
-analyze -format verilog ./include/imem.v
-analyze -format verilog ./include/dmem.v
 
 elaborate $design_name
 current_design $design_name
-set_dont_touch [find design -hierarchy imem*]
-set_dont_touch [find design -hierarchy dmem*]
-
 
 # Setting $design_name as current working design.
 # Use this command before setting any constraints.
@@ -46,24 +42,27 @@ set_dont_touch [find design -hierarchy dmem*]
 # This command checks whether your design can be compiled
 link ;
 
-# Create a clock with period of 5.
+# Create a clock with period of 4ns (250 MHz)
 create_clock -name clk -period 4 -waveform [list 0 2] [get_ports clk]
 
-# Setting timing constraints for combinational logic.
-# Specifying maximum delay from inputs to outputs
-#set_max_delay 5.0 -to [all_outputs];
-#set_max_delay 5.0 -from [all_inputs];
+# Timing constraints per Phase 4 spec
+set_clock_latency 0.5 CLK
+set_input_delay 1.0 -clock CLK [all_inputs]
+set_output_delay 1.0 -clock CLK [all_outputs]
 
 # "check_design" checks the internal representation of the
 # current design for consistency and issues error and
 # warning messages as appropriate.
 check_design > report/$design_name.check_design ;
 
+# Prevent DC from uniquifying and over-optimizing SFU instances
+set_dont_touch [find design -hierarchy sfu*]
+
 # Perforing synthesis and optimization on the current_design.
 compile ;
 # compile_ultra
 
-# For better synthesis result, use "" command.
+# For better synthesis result, use "compile_ultra" command.
 # compile_ultra is doing automatic ungrouping during optimization,
 # therefore sometimes it's hard to figure out the critical path 
 # from the synthesized netlist.
@@ -74,7 +73,7 @@ compile ;
 # "read_db" command for further analysis (timing, area...).
 # write -xg_force_db -format db -hierarchy -out db/$design_name.db ;
 
-# Generating timing,area and power report of the synthezied design.
+# Generating timing, area and power report of the synthesized design.
 report_timing > report/$design_name.timing ;
 report_area > report/$design_name.area ;
 report_power > report/$design_name.power ;

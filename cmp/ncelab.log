@@ -1,5 +1,5 @@
 ncelab(64): 15.20-s086: (c) Copyright 1995-2020 Cadence Design Systems, Inc.
-TOOL:	ncelab(64)	15.20-s086: Started on Apr 17, 2026 at 18:15:40 PDT
+TOOL:	ncelab(64)	15.20-s086: Started on Apr 17, 2026 at 18:32:39 PDT
 ncelab
     -ACCESS +rwc
     -NCFATAL INVSUP
@@ -2130,4 +2130,4 @@ Resolved design unit 'DW_sqrt' at 'tb_cardinal_torus_cmp.CMP@cardinal_torus_cmp<
 		Pseudo assignments:      226      46
 		Simulation timescale:   10ps
 	Writing initial simulation snapshot: work.tb_cardinal_torus_cmp:module
-TOOL:	ncelab(64)	15.20-s086: Exiting on Apr 17, 2026 at 18:15:41 PDT  (total: 00:00:01)
+TOOL:	ncelab(64)	15.20-s086: Exiting on Apr 17, 2026 at 18:32:40 PDT  (total: 00:00:01)
