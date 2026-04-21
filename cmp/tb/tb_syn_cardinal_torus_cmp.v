@@ -4,46 +4,206 @@
 // ============================================================
 // tb_cardinal_torus_cmp.v
 // Testbench for 16-core Cardinal Chip Multiprocessor
-//
-// Test pattern: All-to-all communication
-//   Each of 16 nodes sends 1 packet to each of the other 15
-//   nodes (240 packets total).
-//
-// Memory layout per node:
-//   MEM[0..14]  = 15 outgoing packets (pre-loaded)
-//   MEM[15]     = 0x0000000000000000 sentinel
-//   MEM[16..30] = 15 incoming packets stored by recv loop
-//   MEM[31]     = 0x0000000000000000
-//
-// Packet header (big-endian bit[0]=MSB):
-//   bit[0]     = vc
-//   bit[1]     = dirX
-//   bit[2]     = dirY
-//   bit[3:7]   = reserved
-//   bit[8:11]  = hopX
-//   bit[12:15] = hopY
-//   bit[16:23] = sourceX (col of sender)
-//   bit[24:31] = sourceY (row of sender)
-//   bit[32:63] = payload
+// Phase 4: imem/dmem instantiated externally per spec Figure 1
 // ============================================================
 
 `define CYCLE_TIME 4
 
-module tb_syn_cardinal_torus_cmp;
+module tb_cardinal_torus_cmp;
 
 // ============================================================
 // Clock and Reset
 // ============================================================
 reg clk, reset;
-
 always #2 clk = ~clk;
+
+// ============================================================
+// Memory interface wires (per node)
+// ============================================================
+wire [0:31] node00_inst_in; wire [0:63] node00_d_in;
+wire [0:31] node00_pc_out;  wire [0:63] node00_d_out;
+wire [0:31] node00_addr_out; wire node00_memWrEn, node00_memEn;
+
+wire [0:31] node01_inst_in; wire [0:63] node01_d_in;
+wire [0:31] node01_pc_out;  wire [0:63] node01_d_out;
+wire [0:31] node01_addr_out; wire node01_memWrEn, node01_memEn;
+
+wire [0:31] node02_inst_in; wire [0:63] node02_d_in;
+wire [0:31] node02_pc_out;  wire [0:63] node02_d_out;
+wire [0:31] node02_addr_out; wire node02_memWrEn, node02_memEn;
+
+wire [0:31] node03_inst_in; wire [0:63] node03_d_in;
+wire [0:31] node03_pc_out;  wire [0:63] node03_d_out;
+wire [0:31] node03_addr_out; wire node03_memWrEn, node03_memEn;
+
+wire [0:31] node10_inst_in; wire [0:63] node10_d_in;
+wire [0:31] node10_pc_out;  wire [0:63] node10_d_out;
+wire [0:31] node10_addr_out; wire node10_memWrEn, node10_memEn;
+
+wire [0:31] node11_inst_in; wire [0:63] node11_d_in;
+wire [0:31] node11_pc_out;  wire [0:63] node11_d_out;
+wire [0:31] node11_addr_out; wire node11_memWrEn, node11_memEn;
+
+wire [0:31] node12_inst_in; wire [0:63] node12_d_in;
+wire [0:31] node12_pc_out;  wire [0:63] node12_d_out;
+wire [0:31] node12_addr_out; wire node12_memWrEn, node12_memEn;
+
+wire [0:31] node13_inst_in; wire [0:63] node13_d_in;
+wire [0:31] node13_pc_out;  wire [0:63] node13_d_out;
+wire [0:31] node13_addr_out; wire node13_memWrEn, node13_memEn;
+
+wire [0:31] node20_inst_in; wire [0:63] node20_d_in;
+wire [0:31] node20_pc_out;  wire [0:63] node20_d_out;
+wire [0:31] node20_addr_out; wire node20_memWrEn, node20_memEn;
+
+wire [0:31] node21_inst_in; wire [0:63] node21_d_in;
+wire [0:31] node21_pc_out;  wire [0:63] node21_d_out;
+wire [0:31] node21_addr_out; wire node21_memWrEn, node21_memEn;
+
+wire [0:31] node22_inst_in; wire [0:63] node22_d_in;
+wire [0:31] node22_pc_out;  wire [0:63] node22_d_out;
+wire [0:31] node22_addr_out; wire node22_memWrEn, node22_memEn;
+
+wire [0:31] node23_inst_in; wire [0:63] node23_d_in;
+wire [0:31] node23_pc_out;  wire [0:63] node23_d_out;
+wire [0:31] node23_addr_out; wire node23_memWrEn, node23_memEn;
+
+wire [0:31] node30_inst_in; wire [0:63] node30_d_in;
+wire [0:31] node30_pc_out;  wire [0:63] node30_d_out;
+wire [0:31] node30_addr_out; wire node30_memWrEn, node30_memEn;
+
+wire [0:31] node31_inst_in; wire [0:63] node31_d_in;
+wire [0:31] node31_pc_out;  wire [0:63] node31_d_out;
+wire [0:31] node31_addr_out; wire node31_memWrEn, node31_memEn;
+
+wire [0:31] node32_inst_in; wire [0:63] node32_d_in;
+wire [0:31] node32_pc_out;  wire [0:63] node32_d_out;
+wire [0:31] node32_addr_out; wire node32_memWrEn, node32_memEn;
+
+wire [0:31] node33_inst_in; wire [0:63] node33_d_in;
+wire [0:31] node33_pc_out;  wire [0:63] node33_d_out;
+wire [0:31] node33_addr_out; wire node33_memWrEn, node33_memEn;
+
+// ============================================================
+// External memory instantiations
+// ============================================================
+imem IMEM_00 (.memAddr(node00_pc_out[22:29]),   .dataOut(node00_inst_in));
+dmem DMEM_00 (.clk(clk), .memEn(node00_memEn), .memWrEn(node00_memWrEn),
+              .memAddr(node00_addr_out[24:31]), .dataIn(node00_d_out), .dataOut(node00_d_in));
+
+imem IMEM_01 (.memAddr(node01_pc_out[22:29]),   .dataOut(node01_inst_in));
+dmem DMEM_01 (.clk(clk), .memEn(node01_memEn), .memWrEn(node01_memWrEn),
+              .memAddr(node01_addr_out[24:31]), .dataIn(node01_d_out), .dataOut(node01_d_in));
+
+imem IMEM_02 (.memAddr(node02_pc_out[22:29]),   .dataOut(node02_inst_in));
+dmem DMEM_02 (.clk(clk), .memEn(node02_memEn), .memWrEn(node02_memWrEn),
+              .memAddr(node02_addr_out[24:31]), .dataIn(node02_d_out), .dataOut(node02_d_in));
+
+imem IMEM_03 (.memAddr(node03_pc_out[22:29]),   .dataOut(node03_inst_in));
+dmem DMEM_03 (.clk(clk), .memEn(node03_memEn), .memWrEn(node03_memWrEn),
+              .memAddr(node03_addr_out[24:31]), .dataIn(node03_d_out), .dataOut(node03_d_in));
+
+imem IMEM_10 (.memAddr(node10_pc_out[22:29]),   .dataOut(node10_inst_in));
+dmem DMEM_10 (.clk(clk), .memEn(node10_memEn), .memWrEn(node10_memWrEn),
+              .memAddr(node10_addr_out[24:31]), .dataIn(node10_d_out), .dataOut(node10_d_in));
+
+imem IMEM_11 (.memAddr(node11_pc_out[22:29]),   .dataOut(node11_inst_in));
+dmem DMEM_11 (.clk(clk), .memEn(node11_memEn), .memWrEn(node11_memWrEn),
+              .memAddr(node11_addr_out[24:31]), .dataIn(node11_d_out), .dataOut(node11_d_in));
+
+imem IMEM_12 (.memAddr(node12_pc_out[22:29]),   .dataOut(node12_inst_in));
+dmem DMEM_12 (.clk(clk), .memEn(node12_memEn), .memWrEn(node12_memWrEn),
+              .memAddr(node12_addr_out[24:31]), .dataIn(node12_d_out), .dataOut(node12_d_in));
+
+imem IMEM_13 (.memAddr(node13_pc_out[22:29]),   .dataOut(node13_inst_in));
+dmem DMEM_13 (.clk(clk), .memEn(node13_memEn), .memWrEn(node13_memWrEn),
+              .memAddr(node13_addr_out[24:31]), .dataIn(node13_d_out), .dataOut(node13_d_in));
+
+imem IMEM_20 (.memAddr(node20_pc_out[22:29]),   .dataOut(node20_inst_in));
+dmem DMEM_20 (.clk(clk), .memEn(node20_memEn), .memWrEn(node20_memWrEn),
+              .memAddr(node20_addr_out[24:31]), .dataIn(node20_d_out), .dataOut(node20_d_in));
+
+imem IMEM_21 (.memAddr(node21_pc_out[22:29]),   .dataOut(node21_inst_in));
+dmem DMEM_21 (.clk(clk), .memEn(node21_memEn), .memWrEn(node21_memWrEn),
+              .memAddr(node21_addr_out[24:31]), .dataIn(node21_d_out), .dataOut(node21_d_in));
+
+imem IMEM_22 (.memAddr(node22_pc_out[22:29]),   .dataOut(node22_inst_in));
+dmem DMEM_22 (.clk(clk), .memEn(node22_memEn), .memWrEn(node22_memWrEn),
+              .memAddr(node22_addr_out[24:31]), .dataIn(node22_d_out), .dataOut(node22_d_in));
+
+imem IMEM_23 (.memAddr(node23_pc_out[22:29]),   .dataOut(node23_inst_in));
+dmem DMEM_23 (.clk(clk), .memEn(node23_memEn), .memWrEn(node23_memWrEn),
+              .memAddr(node23_addr_out[24:31]), .dataIn(node23_d_out), .dataOut(node23_d_in));
+
+imem IMEM_30 (.memAddr(node30_pc_out[22:29]),   .dataOut(node30_inst_in));
+dmem DMEM_30 (.clk(clk), .memEn(node30_memEn), .memWrEn(node30_memWrEn),
+              .memAddr(node30_addr_out[24:31]), .dataIn(node30_d_out), .dataOut(node30_d_in));
+
+imem IMEM_31 (.memAddr(node31_pc_out[22:29]),   .dataOut(node31_inst_in));
+dmem DMEM_31 (.clk(clk), .memEn(node31_memEn), .memWrEn(node31_memWrEn),
+              .memAddr(node31_addr_out[24:31]), .dataIn(node31_d_out), .dataOut(node31_d_in));
+
+imem IMEM_32 (.memAddr(node32_pc_out[22:29]),   .dataOut(node32_inst_in));
+dmem DMEM_32 (.clk(clk), .memEn(node32_memEn), .memWrEn(node32_memWrEn),
+              .memAddr(node32_addr_out[24:31]), .dataIn(node32_d_out), .dataOut(node32_d_in));
+
+imem IMEM_33 (.memAddr(node33_pc_out[22:29]),   .dataOut(node33_inst_in));
+dmem DMEM_33 (.clk(clk), .memEn(node33_memEn), .memWrEn(node33_memWrEn),
+              .memAddr(node33_addr_out[24:31]), .dataIn(node33_d_out), .dataOut(node33_d_in));
 
 // ============================================================
 // DUT instantiation
 // ============================================================
 cardinal_torus_cmp CMP (
-    .clk(clk),
-    .reset(reset)
+    .clk(clk), .reset(reset),
+    .node00_inst_in(node00_inst_in), .node00_d_in(node00_d_in),
+    .node00_pc_out(node00_pc_out),   .node00_d_out(node00_d_out),
+    .node00_addr_out(node00_addr_out), .node00_memWrEn(node00_memWrEn), .node00_memEn(node00_memEn),
+    .node01_inst_in(node01_inst_in), .node01_d_in(node01_d_in),
+    .node01_pc_out(node01_pc_out),   .node01_d_out(node01_d_out),
+    .node01_addr_out(node01_addr_out), .node01_memWrEn(node01_memWrEn), .node01_memEn(node01_memEn),
+    .node02_inst_in(node02_inst_in), .node02_d_in(node02_d_in),
+    .node02_pc_out(node02_pc_out),   .node02_d_out(node02_d_out),
+    .node02_addr_out(node02_addr_out), .node02_memWrEn(node02_memWrEn), .node02_memEn(node02_memEn),
+    .node03_inst_in(node03_inst_in), .node03_d_in(node03_d_in),
+    .node03_pc_out(node03_pc_out),   .node03_d_out(node03_d_out),
+    .node03_addr_out(node03_addr_out), .node03_memWrEn(node03_memWrEn), .node03_memEn(node03_memEn),
+    .node10_inst_in(node10_inst_in), .node10_d_in(node10_d_in),
+    .node10_pc_out(node10_pc_out),   .node10_d_out(node10_d_out),
+    .node10_addr_out(node10_addr_out), .node10_memWrEn(node10_memWrEn), .node10_memEn(node10_memEn),
+    .node11_inst_in(node11_inst_in), .node11_d_in(node11_d_in),
+    .node11_pc_out(node11_pc_out),   .node11_d_out(node11_d_out),
+    .node11_addr_out(node11_addr_out), .node11_memWrEn(node11_memWrEn), .node11_memEn(node11_memEn),
+    .node12_inst_in(node12_inst_in), .node12_d_in(node12_d_in),
+    .node12_pc_out(node12_pc_out),   .node12_d_out(node12_d_out),
+    .node12_addr_out(node12_addr_out), .node12_memWrEn(node12_memWrEn), .node12_memEn(node12_memEn),
+    .node13_inst_in(node13_inst_in), .node13_d_in(node13_d_in),
+    .node13_pc_out(node13_pc_out),   .node13_d_out(node13_d_out),
+    .node13_addr_out(node13_addr_out), .node13_memWrEn(node13_memWrEn), .node13_memEn(node13_memEn),
+    .node20_inst_in(node20_inst_in), .node20_d_in(node20_d_in),
+    .node20_pc_out(node20_pc_out),   .node20_d_out(node20_d_out),
+    .node20_addr_out(node20_addr_out), .node20_memWrEn(node20_memWrEn), .node20_memEn(node20_memEn),
+    .node21_inst_in(node21_inst_in), .node21_d_in(node21_d_in),
+    .node21_pc_out(node21_pc_out),   .node21_d_out(node21_d_out),
+    .node21_addr_out(node21_addr_out), .node21_memWrEn(node21_memWrEn), .node21_memEn(node21_memEn),
+    .node22_inst_in(node22_inst_in), .node22_d_in(node22_d_in),
+    .node22_pc_out(node22_pc_out),   .node22_d_out(node22_d_out),
+    .node22_addr_out(node22_addr_out), .node22_memWrEn(node22_memWrEn), .node22_memEn(node22_memEn),
+    .node23_inst_in(node23_inst_in), .node23_d_in(node23_d_in),
+    .node23_pc_out(node23_pc_out),   .node23_d_out(node23_d_out),
+    .node23_addr_out(node23_addr_out), .node23_memWrEn(node23_memWrEn), .node23_memEn(node23_memEn),
+    .node30_inst_in(node30_inst_in), .node30_d_in(node30_d_in),
+    .node30_pc_out(node30_pc_out),   .node30_d_out(node30_d_out),
+    .node30_addr_out(node30_addr_out), .node30_memWrEn(node30_memWrEn), .node30_memEn(node30_memEn),
+    .node31_inst_in(node31_inst_in), .node31_d_in(node31_d_in),
+    .node31_pc_out(node31_pc_out),   .node31_d_out(node31_d_out),
+    .node31_addr_out(node31_addr_out), .node31_memWrEn(node31_memWrEn), .node31_memEn(node31_memEn),
+    .node32_inst_in(node32_inst_in), .node32_d_in(node32_d_in),
+    .node32_pc_out(node32_pc_out),   .node32_d_out(node32_d_out),
+    .node32_addr_out(node32_addr_out), .node32_memWrEn(node32_memWrEn), .node32_memEn(node32_memEn),
+    .node33_inst_in(node33_inst_in), .node33_d_in(node33_d_in),
+    .node33_pc_out(node33_pc_out),   .node33_d_out(node33_d_out),
+    .node33_addr_out(node33_addr_out), .node33_memWrEn(node33_memWrEn), .node33_memEn(node33_memEn)
 );
 
 integer completion_time_ns;
@@ -58,22 +218,22 @@ always @(posedge clk) begin
         integer m;
         cnt = 0;
         for (m = 16; m <= 30; m = m + 1) begin
-            if (tb_cardinal_torus_cmp.CMP.DMEM_00.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_01.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_02.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_03.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_10.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_11.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_12.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_13.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_20.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_21.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_22.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_23.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_30.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_31.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_32.MEM[m] !== 64'd0) cnt = cnt + 1;
-            if (tb_cardinal_torus_cmp.CMP.DMEM_33.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_00.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_01.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_02.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_03.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_10.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_11.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_12.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_13.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_20.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_21.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_22.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_23.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_30.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_31.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_32.MEM[m] !== 64'd0) cnt = cnt + 1;
+            if (tb_cardinal_torus_cmp.DMEM_33.MEM[m] !== 64'd0) cnt = cnt + 1;
         end
         if (cnt == 240) begin
             completion_time_ns = $time;
@@ -145,40 +305,40 @@ initial begin
             cov_matrix[i][j] = 0;
 
     // Load instruction memories (identical program for all nodes)
-    $readmemh("./testcase_torus/cmp_test.imem.00.fill", tb_cardinal_torus_cmp.CMP.IMEM_00.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.01.fill", tb_cardinal_torus_cmp.CMP.IMEM_01.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.02.fill", tb_cardinal_torus_cmp.CMP.IMEM_02.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.03.fill", tb_cardinal_torus_cmp.CMP.IMEM_03.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.10.fill", tb_cardinal_torus_cmp.CMP.IMEM_10.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.11.fill", tb_cardinal_torus_cmp.CMP.IMEM_11.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.12.fill", tb_cardinal_torus_cmp.CMP.IMEM_12.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.13.fill", tb_cardinal_torus_cmp.CMP.IMEM_13.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.20.fill", tb_cardinal_torus_cmp.CMP.IMEM_20.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.21.fill", tb_cardinal_torus_cmp.CMP.IMEM_21.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.22.fill", tb_cardinal_torus_cmp.CMP.IMEM_22.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.23.fill", tb_cardinal_torus_cmp.CMP.IMEM_23.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.30.fill", tb_cardinal_torus_cmp.CMP.IMEM_30.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.31.fill", tb_cardinal_torus_cmp.CMP.IMEM_31.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.32.fill", tb_cardinal_torus_cmp.CMP.IMEM_32.MEM);
-    $readmemh("./testcase_torus/cmp_test.imem.33.fill", tb_cardinal_torus_cmp.CMP.IMEM_33.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.00.fill", tb_cardinal_torus_cmp.IMEM_00.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.01.fill", tb_cardinal_torus_cmp.IMEM_01.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.02.fill", tb_cardinal_torus_cmp.IMEM_02.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.03.fill", tb_cardinal_torus_cmp.IMEM_03.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.10.fill", tb_cardinal_torus_cmp.IMEM_10.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.11.fill", tb_cardinal_torus_cmp.IMEM_11.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.12.fill", tb_cardinal_torus_cmp.IMEM_12.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.13.fill", tb_cardinal_torus_cmp.IMEM_13.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.20.fill", tb_cardinal_torus_cmp.IMEM_20.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.21.fill", tb_cardinal_torus_cmp.IMEM_21.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.22.fill", tb_cardinal_torus_cmp.IMEM_22.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.23.fill", tb_cardinal_torus_cmp.IMEM_23.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.30.fill", tb_cardinal_torus_cmp.IMEM_30.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.31.fill", tb_cardinal_torus_cmp.IMEM_31.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.32.fill", tb_cardinal_torus_cmp.IMEM_32.MEM);
+    $readmemh("./testcase_torus/cmp_test.imem.33.fill", tb_cardinal_torus_cmp.IMEM_33.MEM);
 
     // Load data memories (unique per node - contains outgoing packets)
-    $readmemh("./testcase_torus/cmp_test.dmem.00.fill", tb_cardinal_torus_cmp.CMP.DMEM_00.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.01.fill", tb_cardinal_torus_cmp.CMP.DMEM_01.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.02.fill", tb_cardinal_torus_cmp.CMP.DMEM_02.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.03.fill", tb_cardinal_torus_cmp.CMP.DMEM_03.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.10.fill", tb_cardinal_torus_cmp.CMP.DMEM_10.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.11.fill", tb_cardinal_torus_cmp.CMP.DMEM_11.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.12.fill", tb_cardinal_torus_cmp.CMP.DMEM_12.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.13.fill", tb_cardinal_torus_cmp.CMP.DMEM_13.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.20.fill", tb_cardinal_torus_cmp.CMP.DMEM_20.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.21.fill", tb_cardinal_torus_cmp.CMP.DMEM_21.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.22.fill", tb_cardinal_torus_cmp.CMP.DMEM_22.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.23.fill", tb_cardinal_torus_cmp.CMP.DMEM_23.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.30.fill", tb_cardinal_torus_cmp.CMP.DMEM_30.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.31.fill", tb_cardinal_torus_cmp.CMP.DMEM_31.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.32.fill", tb_cardinal_torus_cmp.CMP.DMEM_32.MEM);
-    $readmemh("./testcase_torus/cmp_test.dmem.33.fill", tb_cardinal_torus_cmp.CMP.DMEM_33.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.00.fill", tb_cardinal_torus_cmp.DMEM_00.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.01.fill", tb_cardinal_torus_cmp.DMEM_01.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.02.fill", tb_cardinal_torus_cmp.DMEM_02.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.03.fill", tb_cardinal_torus_cmp.DMEM_03.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.10.fill", tb_cardinal_torus_cmp.DMEM_10.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.11.fill", tb_cardinal_torus_cmp.DMEM_11.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.12.fill", tb_cardinal_torus_cmp.DMEM_12.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.13.fill", tb_cardinal_torus_cmp.DMEM_13.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.20.fill", tb_cardinal_torus_cmp.DMEM_20.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.21.fill", tb_cardinal_torus_cmp.DMEM_21.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.22.fill", tb_cardinal_torus_cmp.DMEM_22.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.23.fill", tb_cardinal_torus_cmp.DMEM_23.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.30.fill", tb_cardinal_torus_cmp.DMEM_30.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.31.fill", tb_cardinal_torus_cmp.DMEM_31.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.32.fill", tb_cardinal_torus_cmp.DMEM_32.MEM);
+    $readmemh("./testcase_torus/cmp_test.dmem.33.fill", tb_cardinal_torus_cmp.DMEM_33.MEM);
 
     // Assert reset for 4 cycles
     #(4 * `CYCLE_TIME);
@@ -217,37 +377,37 @@ initial begin
     dump_file[15] = $fopen("./report_torus/cmp_test.dmem.33.dump");
 
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[0],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_00.MEM[i]);
+        $fdisplay(dump_file[0],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_00.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[1],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_01.MEM[i]);
+        $fdisplay(dump_file[1],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_01.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[2],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_02.MEM[i]);
+        $fdisplay(dump_file[2],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_02.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[3],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_03.MEM[i]);
+        $fdisplay(dump_file[3],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_03.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[4],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_10.MEM[i]);
+        $fdisplay(dump_file[4],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_10.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[5],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_11.MEM[i]);
+        $fdisplay(dump_file[5],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_11.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[6],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_12.MEM[i]);
+        $fdisplay(dump_file[6],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_12.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[7],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_13.MEM[i]);
+        $fdisplay(dump_file[7],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_13.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[8],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_20.MEM[i]);
+        $fdisplay(dump_file[8],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_20.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[9],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_21.MEM[i]);
+        $fdisplay(dump_file[9],  "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_21.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[10], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_22.MEM[i]);
+        $fdisplay(dump_file[10], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_22.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[11], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_23.MEM[i]);
+        $fdisplay(dump_file[11], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_23.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[12], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_30.MEM[i]);
+        $fdisplay(dump_file[12], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_30.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[13], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_31.MEM[i]);
+        $fdisplay(dump_file[13], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_31.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[14], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_32.MEM[i]);
+        $fdisplay(dump_file[14], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_32.MEM[i]);
     for (i = 0; i < 32; i = i + 1)
-        $fdisplay(dump_file[15], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.CMP.DMEM_33.MEM[i]);
+        $fdisplay(dump_file[15], "Memory location # %3d : %016h", i, tb_cardinal_torus_cmp.DMEM_33.MEM[i]);
 
     for (i = 0; i < 16; i = i + 1)
         $fclose(dump_file[i]);
@@ -263,10 +423,10 @@ initial begin
 
     // Node 00 (id=0, row=0, col=0)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_00.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_00.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_00.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_00.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_00.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_00.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_00.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_00.MEM[i][16:23];
             if (cov_matrix[j][0] == 0) begin
                 cov_matrix[j][0] = 1; total_delivered = total_delivered + 1;
             end
@@ -274,10 +434,10 @@ initial begin
     end
     // Node 01 (id=1)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_01.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_01.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_01.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_01.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_01.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_01.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_01.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_01.MEM[i][16:23];
             if (cov_matrix[j][1] == 0) begin
                 cov_matrix[j][1] = 1; total_delivered = total_delivered + 1;
             end
@@ -285,10 +445,10 @@ initial begin
     end
     // Node 02 (id=2)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_02.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_02.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_02.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_02.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_02.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_02.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_02.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_02.MEM[i][16:23];
             if (cov_matrix[j][2] == 0) begin
                 cov_matrix[j][2] = 1; total_delivered = total_delivered + 1;
             end
@@ -296,10 +456,10 @@ initial begin
     end
     // Node 03 (id=3)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_03.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_03.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_03.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_03.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_03.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_03.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_03.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_03.MEM[i][16:23];
             if (cov_matrix[j][3] == 0) begin
                 cov_matrix[j][3] = 1; total_delivered = total_delivered + 1;
             end
@@ -307,10 +467,10 @@ initial begin
     end
     // Node 10 (id=4)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_10.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_10.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_10.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_10.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_10.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_10.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_10.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_10.MEM[i][16:23];
             if (cov_matrix[j][4] == 0) begin
                 cov_matrix[j][4] = 1; total_delivered = total_delivered + 1;
             end
@@ -318,10 +478,10 @@ initial begin
     end
     // Node 11 (id=5)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_11.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_11.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_11.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_11.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_11.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_11.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_11.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_11.MEM[i][16:23];
             if (cov_matrix[j][5] == 0) begin
                 cov_matrix[j][5] = 1; total_delivered = total_delivered + 1;
             end
@@ -329,10 +489,10 @@ initial begin
     end
     // Node 12 (id=6)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_12.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_12.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_12.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_12.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_12.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_12.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_12.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_12.MEM[i][16:23];
             if (cov_matrix[j][6] == 0) begin
                 cov_matrix[j][6] = 1; total_delivered = total_delivered + 1;
             end
@@ -340,10 +500,10 @@ initial begin
     end
     // Node 13 (id=7)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_13.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_13.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_13.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_13.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_13.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_13.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_13.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_13.MEM[i][16:23];
             if (cov_matrix[j][7] == 0) begin
                 cov_matrix[j][7] = 1; total_delivered = total_delivered + 1;
             end
@@ -351,10 +511,10 @@ initial begin
     end
     // Node 20 (id=8)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_20.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_20.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_20.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_20.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_20.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_20.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_20.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_20.MEM[i][16:23];
             if (cov_matrix[j][8] == 0) begin
                 cov_matrix[j][8] = 1; total_delivered = total_delivered + 1;
             end
@@ -362,10 +522,10 @@ initial begin
     end
     // Node 21 (id=9)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_21.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_21.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_21.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_21.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_21.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_21.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_21.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_21.MEM[i][16:23];
             if (cov_matrix[j][9] == 0) begin
                 cov_matrix[j][9] = 1; total_delivered = total_delivered + 1;
             end
@@ -373,10 +533,10 @@ initial begin
     end
     // Node 22 (id=10)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_22.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_22.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_22.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_22.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_22.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_22.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_22.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_22.MEM[i][16:23];
             if (cov_matrix[j][10] == 0) begin
                 cov_matrix[j][10] = 1; total_delivered = total_delivered + 1;
             end
@@ -384,10 +544,10 @@ initial begin
     end
     // Node 23 (id=11)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_23.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_23.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_23.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_23.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_23.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_23.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_23.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_23.MEM[i][16:23];
             if (cov_matrix[j][11] == 0) begin
                 cov_matrix[j][11] = 1; total_delivered = total_delivered + 1;
             end
@@ -395,10 +555,10 @@ initial begin
     end
     // Node 30 (id=12)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_30.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_30.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_30.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_30.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_30.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_30.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_30.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_30.MEM[i][16:23];
             if (cov_matrix[j][12] == 0) begin
                 cov_matrix[j][12] = 1; total_delivered = total_delivered + 1;
             end
@@ -406,10 +566,10 @@ initial begin
     end
     // Node 31 (id=13)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_31.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_31.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_31.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_31.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_31.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_31.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_31.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_31.MEM[i][16:23];
             if (cov_matrix[j][13] == 0) begin
                 cov_matrix[j][13] = 1; total_delivered = total_delivered + 1;
             end
@@ -417,10 +577,10 @@ initial begin
     end
     // Node 32 (id=14)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_32.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_32.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_32.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_32.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_32.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_32.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_32.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_32.MEM[i][16:23];
             if (cov_matrix[j][14] == 0) begin
                 cov_matrix[j][14] = 1; total_delivered = total_delivered + 1;
             end
@@ -428,10 +588,10 @@ initial begin
     end
     // Node 33 (id=15)
     for (i = 16; i <= 30; i = i + 1) begin
-        if (tb_cardinal_torus_cmp.CMP.DMEM_33.MEM[i] !== 64'bx &&
-            tb_cardinal_torus_cmp.CMP.DMEM_33.MEM[i] !== 64'd0) begin
-            j = tb_cardinal_torus_cmp.CMP.DMEM_33.MEM[i][24:31] * 4 +
-                tb_cardinal_torus_cmp.CMP.DMEM_33.MEM[i][16:23];
+        if (tb_cardinal_torus_cmp.DMEM_33.MEM[i] !== 64'bx &&
+            tb_cardinal_torus_cmp.DMEM_33.MEM[i] !== 64'd0) begin
+            j = tb_cardinal_torus_cmp.DMEM_33.MEM[i][24:31] * 4 +
+                tb_cardinal_torus_cmp.DMEM_33.MEM[i][16:23];
             if (cov_matrix[j][15] == 0) begin
                 cov_matrix[j][15] = 1; total_delivered = total_delivered + 1;
             end
