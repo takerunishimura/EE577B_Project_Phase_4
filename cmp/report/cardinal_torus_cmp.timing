@@ -1,0 +1,181 @@
+Module: DW_div_a_width8_b_width8_tc_mode0_rem_mode1, Ports: 33, Input: 16, Output: 17, Inout: 0
+Module: DW_div_a_width8_b_width8_tc_mode0_rem_mode1, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_div_a_width8_b_width8_tc_mode0_rem_mode1'
+Module: DW01_MUX, Ports: 4, Input: 3, Output: 1, Inout: 0
+Module: DW01_MUX, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW01_mmux_width2, Ports: 7, Input: 5, Output: 2, Inout: 0
+Module: DW01_mmux_width2, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW01_mmux_width3, Ports: 10, Input: 7, Output: 3, Inout: 0
+Module: DW01_mmux_width3, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW01_mmux_width4, Ports: 13, Input: 9, Output: 4, Inout: 0
+Module: DW01_mmux_width4, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW01_mmux_width5, Ports: 16, Input: 11, Output: 5, Inout: 0
+Module: DW01_mmux_width5, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW_sqrt_width8_tc_mode0, Ports: 12, Input: 8, Output: 4, Inout: 0
+Module: DW_sqrt_width8_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW_sqrt_width8_tc_mode0, Ports: 12, Input: 8, Output: 4, Inout: 0
+Module: DW_sqrt_width8_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_sqrt_width8_tc_mode0'
+Module: DW_div_a_width16_b_width16_tc_mode0_rem_mode1, Ports: 65, Input: 32, Output: 33, Inout: 0
+Module: DW_div_a_width16_b_width16_tc_mode0_rem_mode1, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_div_a_width16_b_width16_tc_mode0_rem_mode1'
+Module: DW_sqrt_width16_tc_mode0, Ports: 24, Input: 16, Output: 8, Inout: 0
+Module: DW_sqrt_width16_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW_sqrt_width16_tc_mode0, Ports: 24, Input: 16, Output: 8, Inout: 0
+Module: DW_sqrt_width16_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_sqrt_width16_tc_mode0'
+Module: DW_div_a_width32_b_width32_tc_mode0_rem_mode1, Ports: 129, Input: 64, Output: 65, Inout: 0
+Module: DW_div_a_width32_b_width32_tc_mode0_rem_mode1, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_div_a_width32_b_width32_tc_mode0_rem_mode1'
+Module: DW_sqrt_width32_tc_mode0, Ports: 48, Input: 32, Output: 16, Inout: 0
+Module: DW_sqrt_width32_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW_sqrt_width32_tc_mode0, Ports: 48, Input: 32, Output: 16, Inout: 0
+Module: DW_sqrt_width32_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_sqrt_width32_tc_mode0'
+Module: DW_div_a_width64_b_width64_tc_mode0_rem_mode1, Ports: 257, Input: 128, Output: 129, Inout: 0
+Module: DW_div_a_width64_b_width64_tc_mode0_rem_mode1, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_div_a_width64_b_width64_tc_mode0_rem_mode1'
+Module: DW_sqrt_width64_tc_mode0, Ports: 96, Input: 64, Output: 32, Inout: 0
+Module: DW_sqrt_width64_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+Module: DW_sqrt_width64_tc_mode0, Ports: 96, Input: 64, Output: 32, Inout: 0
+Module: DW_sqrt_width64_tc_mode0, Registers: 0, Async set/reset: 0, Sync set/reset: 0
+  Allocating blocks in 'DW_sqrt_width64_tc_mode0'
+Information: Updating design information... (UID-85)
+Warning: Design 'cardinal_torus_cmp' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : cardinal_torus_cmp
+Version: Y-2026.03
+Date   : Mon Apr 20 16:22:56 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: typical   Library: gscl45nm
+Wire Load Model Mode: top
+
+  Startpoint: CPU_10/EX_WB_rD_addr_reg[0]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: CPU_10/IF_ID_reg_reg[0]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  CPU_10/EX_WB_rD_addr_reg[0]/CLK (DFFPOSX1)              0.00 #     0.00 r
+  CPU_10/EX_WB_rD_addr_reg[0]/Q (DFFPOSX1)                0.11       0.11 f
+  CPU_10/FWD_EX/wb_dest_addr[0] (forwarding_unit_ex_12)
+                                                          0.00       0.11 f
+  CPU_10/FWD_EX/U227/Y (INVX1)                            0.01       0.12 r
+  CPU_10/FWD_EX/U71/Y (AND2X2)                            0.03       0.15 r
+  CPU_10/FWD_EX/U72/Y (INVX1)                             0.02       0.17 f
+  CPU_10/FWD_EX/U300/Y (NOR3X1)                           0.05       0.22 r
+  CPU_10/FWD_EX/U302/Y (NOR3X1)                           0.03       0.26 f
+  CPU_10/FWD_EX/U308/Y (NAND3X1)                          0.04       0.29 r
+  CPU_10/FWD_EX/U60/Y (BUFX2)                             0.04       0.33 r
+  CPU_10/FWD_EX/U65/Y (INVX2)                             0.03       0.37 f
+  CPU_10/FWD_EX/U158/Y (INVX1)                            0.05       0.42 r
+  CPU_10/FWD_EX/U120/Y (MUX2X1)                           0.04       0.46 f
+  CPU_10/FWD_EX/U11/Y (INVX1)                             0.01       0.46 r
+  CPU_10/FWD_EX/fwdA_value[49] (forwarding_unit_ex_12)
+                                                          0.00       0.46 r
+  CPU_10/u_alu/operandA[49] (alu_12)                      0.00       0.46 r
+  CPU_10/u_alu/U2708/Y (INVX1)                            0.03       0.50 f
+  CPU_10/u_alu/U230/Y (INVX2)                             0.22       0.72 r
+  CPU_10/u_alu/sub_152/A[14] (alu_12_DW01_sub_15)         0.00       0.72 r
+  CPU_10/u_alu/sub_152/U306/Y (NOR2X1)                    0.10       0.82 f
+  CPU_10/u_alu/sub_152/U294/Y (NOR2X1)                    0.05       0.87 r
+  CPU_10/u_alu/sub_152/U282/Y (NAND2X1)                   0.02       0.89 f
+  CPU_10/u_alu/sub_152/U281/Y (OAI21X1)                   0.05       0.94 r
+  CPU_10/u_alu/sub_152/U279/Y (AOI21X1)                   0.03       0.97 f
+  CPU_10/u_alu/sub_152/U273/Y (OAI21X1)                   0.06       1.03 r
+  CPU_10/u_alu/sub_152/U265/Y (AOI21X1)                   0.04       1.07 f
+  CPU_10/u_alu/sub_152/U259/Y (OAI21X1)                   0.06       1.13 r
+  CPU_10/u_alu/sub_152/U251/Y (AOI21X1)                   0.04       1.17 f
+  CPU_10/u_alu/sub_152/U245/Y (OAI21X1)                   0.06       1.23 r
+  CPU_10/u_alu/sub_152/U237/Y (AOI21X1)                   0.04       1.26 f
+  CPU_10/u_alu/sub_152/U231/Y (OAI21X1)                   0.06       1.33 r
+  CPU_10/u_alu/sub_152/U223/Y (AOI21X1)                   0.04       1.36 f
+  CPU_10/u_alu/sub_152/U217/Y (OAI21X1)                   0.06       1.42 r
+  CPU_10/u_alu/sub_152/U209/Y (AOI21X1)                   0.04       1.46 f
+  CPU_10/u_alu/sub_152/U203/Y (OAI21X1)                   0.06       1.52 r
+  CPU_10/u_alu/sub_152/U195/Y (AOI21X1)                   0.04       1.56 f
+  CPU_10/u_alu/sub_152/U189/Y (OAI21X1)                   0.06       1.62 r
+  CPU_10/u_alu/sub_152/U181/Y (AOI21X1)                   0.04       1.65 f
+  CPU_10/u_alu/sub_152/U175/Y (OAI21X1)                   0.06       1.72 r
+  CPU_10/u_alu/sub_152/U167/Y (AOI21X1)                   0.03       1.75 f
+  CPU_10/u_alu/sub_152/U510/Y (OAI21X1)                   0.04       1.79 r
+  CPU_10/u_alu/sub_152/U153/Y (AOI21X1)                   0.03       1.82 f
+  CPU_10/u_alu/sub_152/U147/Y (OAI21X1)                   0.06       1.89 r
+  CPU_10/u_alu/sub_152/U139/Y (AOI21X1)                   0.03       1.91 f
+  CPU_10/u_alu/sub_152/U507/Y (BUFX2)                     0.04       1.96 f
+  CPU_10/u_alu/sub_152/U508/Y (OAI21X1)                   0.04       2.00 r
+  CPU_10/u_alu/sub_152/U125/Y (AOI21X1)                   0.03       2.03 f
+  CPU_10/u_alu/sub_152/U119/Y (OAI21X1)                   0.06       2.09 r
+  CPU_10/u_alu/sub_152/U111/Y (AOI21X1)                   0.04       2.13 f
+  CPU_10/u_alu/sub_152/U105/Y (OAI21X1)                   0.06       2.19 r
+  CPU_10/u_alu/sub_152/U97/Y (AOI21X1)                    0.04       2.23 f
+  CPU_10/u_alu/sub_152/U91/Y (OAI21X1)                    0.06       2.29 r
+  CPU_10/u_alu/sub_152/U83/Y (AOI21X1)                    0.04       2.33 f
+  CPU_10/u_alu/sub_152/U77/Y (OAI21X1)                    0.06       2.39 r
+  CPU_10/u_alu/sub_152/U69/Y (AOI21X1)                    0.04       2.43 f
+  CPU_10/u_alu/sub_152/U63/Y (OAI21X1)                    0.06       2.49 r
+  CPU_10/u_alu/sub_152/U55/Y (AOI21X1)                    0.04       2.53 f
+  CPU_10/u_alu/sub_152/U49/Y (OAI21X1)                    0.06       2.59 r
+  CPU_10/u_alu/sub_152/U41/Y (AOI21X1)                    0.04       2.63 f
+  CPU_10/u_alu/sub_152/U35/Y (OAI21X1)                    0.06       2.69 r
+  CPU_10/u_alu/sub_152/U27/Y (AOI21X1)                    0.04       2.73 f
+  CPU_10/u_alu/sub_152/U21/Y (OAI21X1)                    0.06       2.79 r
+  CPU_10/u_alu/sub_152/U13/Y (AOI21X1)                    0.03       2.82 f
+  CPU_10/u_alu/sub_152/U679/Y (INVX1)                     0.02       2.84 r
+  CPU_10/u_alu/sub_152/U10/YC (FAX1)                      0.07       2.91 r
+  CPU_10/u_alu/sub_152/U9/YC (FAX1)                       0.07       2.98 r
+  CPU_10/u_alu/sub_152/U8/YC (FAX1)                       0.07       3.06 r
+  CPU_10/u_alu/sub_152/U7/YC (FAX1)                       0.07       3.13 r
+  CPU_10/u_alu/sub_152/U6/YC (FAX1)                       0.07       3.20 r
+  CPU_10/u_alu/sub_152/U5/YC (FAX1)                       0.07       3.28 r
+  CPU_10/u_alu/sub_152/U4/YC (FAX1)                       0.07       3.35 r
+  CPU_10/u_alu/sub_152/U3/YS (FAX1)                       0.08       3.43 f
+  CPU_10/u_alu/sub_152/DIFF[62] (alu_12_DW01_sub_15)      0.00       3.43 f
+  CPU_10/u_alu/U3581/Y (NAND2X1)                          0.03       3.46 r
+  CPU_10/u_alu/U3598/Y (NAND3X1)                          0.02       3.48 f
+  CPU_10/u_alu/U3599/Y (OR2X2)                            0.05       3.52 f
+  CPU_10/u_alu/computed_results[1] (alu_12)               0.00       3.52 f
+  CPU_10/U4/Y (INVX2)                                     0.02       3.54 r
+  CPU_10/U1347/Y (NAND3X1)                                0.01       3.55 f
+  CPU_10/U1348/Y (NOR2X1)                                 0.03       3.58 r
+  CPU_10/U284/Y (INVX1)                                   0.02       3.60 f
+  CPU_10/U205/Y (MUX2X1)                                  0.04       3.64 r
+  CPU_10/U1466/Y (AND2X2)                                 0.04       3.68 r
+  CPU_10/U1467/Y (MUX2X1)                                 0.04       3.73 r
+  CPU_10/U1468/Y (NAND3X1)                                0.02       3.75 f
+  CPU_10/U295/Y (BUFX4)                                   0.05       3.79 f
+  CPU_10/U267/Y (INVX8)                                   0.02       3.81 r
+  CPU_10/U554/Y (INVX1)                                   0.01       3.83 f
+  CPU_10/U1727/Y (NAND3X1)                                0.03       3.86 r
+  CPU_10/U268/Y (INVX2)                                   0.04       3.89 f
+  CPU_10/U160/Y (INVX8)                                   0.03       3.93 r
+  CPU_10/U1728/Y (OAI21X1)                                0.02       3.94 f
+  CPU_10/IF_ID_reg_reg[0]/D (DFFPOSX1)                    0.00       3.94 f
+  data arrival time                                                  3.94
+
+  clock clk (rise edge)                                   4.00       4.00
+  clock network delay (ideal)                             0.00       4.00
+  CPU_10/IF_ID_reg_reg[0]/CLK (DFFPOSX1)                  0.00       4.00 r
+  library setup time                                     -0.06       3.94
+  data required time                                                 3.94
+  --------------------------------------------------------------------------
+  data required time                                                 3.94
+  data arrival time                                                 -3.94
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.00
+
+
+1
