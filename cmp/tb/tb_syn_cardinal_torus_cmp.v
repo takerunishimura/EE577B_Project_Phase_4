@@ -9,7 +9,7 @@
 
 `define CYCLE_TIME 4
 
-module tb_cardinal_torus_cmp;
+module tb_syn_cardinal_torus_cmp;
 
 // ============================================================
 // Clock and Reset

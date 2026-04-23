@@ -1,0 +1,127 @@
+                          CONFORMAL (R)
+                   Version 25.20-p100 (12-Nov-2025) (64 bit executable)
+   Copyright (c) Cadence Design Systems, Inc., 1997-2025. All Rights Reserved
+
+
+This program is proprietary and confidential information belonging to
+Cadence Design Systems, Inc., and may be used and disclosed only as authorized
+in a license agreement controlling such use and disclosure.
+
+// Command: reset
+// Warning: Reset the system and deleting all design data
+CPU time     : 0.20    seconds
+Elapse time  : 0       seconds
+Memory usage : 149.18  M bytes
+// Command: read library -verilog ./include/gscl45nm.v /tools/synopsys/syn/Y-2026.03/packages/gtech/src_ver/gtech_lib.v
+// Parsing file ./include/gscl45nm.v ...
+// Parsing file /tools/synopsys/syn/Y-2026.03/packages/gtech/src_ver/gtech_lib.v ...
+// Note: (RTL1.9h) Parameter declaration with no type or range specification (occurrence:91)
+// Warning: (RTL14) Signal has input but it has no output (occurrence:6)
+// Warning: (RTL14.1) Fanout load of the signal is removed (occurrence:1)
+// Note: (RTL18.9) Only wire instance or instances exist in the library module (occurrence:1)
+// Warning: (VLG1.2) Case equality operators are treated as equality operators (occurrence:10)
+// Note: (VLG9.2) The `define macro is used (occurrence:1)
+// Warning: (DIR6.1) Ignored compiler directive is detected (occurrence:32)
+// Warning: (DIR6.2) Supported compiler directive is detected (occurrence:67)
+// Note: (DIR6.3) Conditional compiler directive clause is effective (occurrence:1)
+// Warning: (IGN2.1) Delay value(s) are ignored (occurrence:201)
+// Note: Read VERILOG library successfully
+// Command: set undefined cell black_box
+// Command: read design -golden -verilog ./design/alu.v ./design/instr_decode.v ./design/reg_file.v ./design/sfu.v ./design/cardinal_cpu.v ./design/cardinal_nic.v ./design/input_ctrl.v ./design/output_ctrl.v ./design/gold_router.v ./design/torus_mesh.v ./design/cardinal_torus_cmp.v
+// Parsing file ./design/alu.v ...
+// Parsing file ./design/instr_decode.v ...
+// Parsing file ./design/reg_file.v ...
+// Parsing file ./design/sfu.v ...
+// Parsing file ./design/cardinal_cpu.v ...
+// Parsing file ./design/cardinal_nic.v ...
+// Parsing file ./design/input_ctrl.v ...
+// Parsing file ./design/output_ctrl.v ...
+// Parsing file ./design/gold_router.v ...
+// Parsing file ./design/torus_mesh.v ...
+// Parsing file ./design/cardinal_torus_cmp.v ...
+// Parsing file /tools/cadence/CONFRML252/share/cfm/lec/library/verilog/dw/DW_sqrt.v ...
+// Golden root module is set to 'cardinal_torus_cmp'
+// Warning: (RTL1.2) Variable/signal is assigned by multiple non-blocking assignments (occurrence:7)
+// Warning: (RTL1.4) Assignment with LHS bit width is greater than RHS bit width (occurrence:12)
+// Warning: (RTL1.5b) Potential loss of RHS msb or carry-out bit (occurrence:31)
+// Note: (RTL1.9h) Parameter declaration with no type or range specification (occurrence:61)
+// Note: (RTL5.5a) Default case item with non-X assignment(s) (occurrence:14)
+// Note: (RTL5.6) Case statement with no default (occurrence:15)
+// Note: (RTL5.7) Default case item with inconsistent assignment(s). (occurrence:2)
+// Note: (RTL8.1) Multiple multipliers/dividers are in module/entity (occurrence:1)
+// Warning: (RTL8.3) Unreachable DFF/DLAT is removed (occurrence:33)
+// Warning: (RTL14) Signal has input but it has no output (occurrence:271)
+// Warning: (RTL14.1) Fanout load of the signal is removed (occurrence:7)
+// Note: (HRC3.5b) Open output port connection is detected (occurrence:8)
+// Warning: (HRC3.15) Parameter positional association occurs in an instantiation (occurrence:29)
+// Warning: (HRC3.16) A wire is declared, but not used in the module (occurrence:1)
+// Warning: (HRC5) DesignWare referenced but not defined (occurrence:2)
+// Note: Read VERILOG design successfully
+CPU time     : 1.21    seconds
+Elapse time  : 1       seconds
+Memory usage : 337.49  M bytes
+// Command: read design -revised -verilog ./netlist/cardinal_torus_cmp_syn.v
+// Parsing file ./netlist/cardinal_torus_cmp_syn.v ...
+// Parsing file /tools/cadence/CONFRML252/share/cfm/lec/library/verilog/dw/DW_sqrt.v ...
+// Revised root module is set to 'cardinal_torus_cmp'
+// Warning: (RTL2.13) Undriven pin is detected (occurrence:836)
+// Warning: (RTL14) Signal has input but it has no output (occurrence:520)
+// Warning: (RTL14.1) Fanout load of the signal is removed (occurrence:560)
+// Note: (HRC1.3) Undefined or non-translated modules will be blackboxed (occurrence:2)
+// Warning: (HRC3.1) Number of instance module port connections is different than the referenced module port declaration (occurrence:14)
+// Note: (HRC3.5b) Open output port connection is detected (occurrence:1285)
+// Warning: (HRC3.6) Port connection width mis-matches. Undriven signals are floating (occurrence:75)
+// Warning: (HRC3.10a) An input port is declared, but it is not completely used in the module (occurrence:1304)
+// Warning: (HRC5) DesignWare referenced but not defined (occurrence:8)
+// Warning: Total black box modules referenced in Revised = 2
+// Warning: There are 948 undriven nets in Revised
+// Warning: There are 2930 undriven pins in Revised
+// Note: Read VERILOG design successfully
+CPU time     : 22.64   seconds
+Elapse time  : 23      seconds
+Memory usage : 870.87  M bytes
+// Command: set system mode lec
+// Processing Golden ...
+// Modeling Golden ...
+// Processing Revised ...
+// Modeling Revised ...
+// (F1) Created 36992 wire resolution gate(s) due to multiple-driven net(s)
+// (F32) Created 110944 Z gate(s) for floating net(s) and floating pin(s)
+// (F28) Converted 9392 internal output port(s) to inout port(s)
+CPU time     : 126.00  seconds
+Elapse time  : 127     seconds
+Memory usage : 2346.62 M bytes
+// Warning: Golden and Revised have different numbers of key points:
+// Golden  key points = 65378
+// Revised key points = 177138
+// Mapping key points ...
+// Warning: Revised has 48592 unmapped key points
+================================================================================
+Mapped points: SYSTEM class
+--------------------------------------------------------------------------------
+Mapped points     PI     PO     DFF       Total   
+--------------------------------------------------------------------------------
+Golden            1538   2080   61760     65378   
+--------------------------------------------------------------------------------
+Revised           1538   2080   61760     65378   
+================================================================================
+Unmapped points:
+================================================================================
+Revised:
+--------------------------------------------------------------------------------
+Unmapped points   Z      BBOX      Total   
+--------------------------------------------------------------------------------
+Unreachable       62720  448       63168   
+Not-mapped        48224  368       48592   
+================================================================================
+// Warning: Key point mapping is incomplete
+CPU time     : 146.28  seconds
+Elapse time  : 148     seconds
+Memory usage : 2473.11 M bytes
+// Command: add compared points -all
+// Warning: Revised has 368 unmapped key points which will not be compared
+// 63840 compared points added to compare list
+CPU time     : 147.69  seconds
+Elapse time  : 149     seconds
+Memory usage : 2473.83 M bytes
+// Command: compare

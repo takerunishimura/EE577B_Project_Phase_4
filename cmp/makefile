@@ -157,6 +157,7 @@ ana~ : $(DESIGN_FILES_TORUS)
 ana_syn~ : $(NETLIST_FILES)
 	for f in $(NETLIST_FILES); do ncvlog $(NCVLOG_SWITCHES) -work work $$f ; done
 	for f in $(TB_FILES);     do ncvlog $(NCVLOG_SWITCHES) -work work $$f ; done
+	ncvlog $(NCVLOG_SWITCHES) -work work /tools/synopsys/syn/Y-2026.03/packages/gtech/src_ver/gtech_lib.v
 	@touch ana_syn~
 
 # elaborate the top module
