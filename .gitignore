@@ -54,3 +54,5 @@ cmp/netlist/*.sdf
 cmp/netlist/*.v
 cmp/netlist/*.sdc
 
+*.tar
+*.zip
